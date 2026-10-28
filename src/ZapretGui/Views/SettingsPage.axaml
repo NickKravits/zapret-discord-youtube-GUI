@@ -1,0 +1,137 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:ZapretGui.ViewModels"
+             x:Class="ZapretGui.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel">
+  <ScrollViewer>
+    <StackPanel Classes="Page">
+      <TextBlock Classes="PageTitle" Text="Параметры" />
+
+      <Border Classes="Card" IsVisible="{Binding ProgressText, Converter={x:Static ObjectConverters.IsNotNull}}" Margin="0,0,0,8">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <ui:ProgressRing IsIndeterminate="True" Width="20" Height="20" />
+          <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" />
+        </StackPanel>
+      </Border>
+
+      <TextBlock Classes="SectionHeader" Text="Запуск" />
+      <ui:SettingsExpander Header="Запускать приложение при входе в систему" Description="{Binding AppAutostartDescription}" IconSource="Play">
+        <ui:SettingsExpander.Footer>
+          <ToggleSwitch IsChecked="{Binding AppAutostart}" OnContent="Вкл." OffContent="Выкл." />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+      <ui:SettingsExpander Header="Включать обход при запуске приложения"
+                           Description="Запускает последнюю выбранную стратегию. Не нужно, если включён автозапуск обхода (служба) на главной"
+                           IconSource="Flag">
+        <ui:SettingsExpander.Footer>
+          <ToggleSwitch IsChecked="{Binding StartBypassOnLaunch}" OnContent="Вкл." OffContent="Выкл." />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+      <ui:SettingsExpander Header="Сворачивать в трей при закрытии" Description="Обход продолжит работать в фоне. Выход — через меню значка в трее" IconSource="BackToWindow">
+        <ui:SettingsExpander.Footer>
+          <ToggleSwitch IsChecked="{Binding MinimizeToTray}" OnContent="Вкл." OffContent="Выкл." />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="Фильтры" />
+      <ui:SettingsExpander Header="Game Filter" Description="Обход для игр и других программ на нестандартных портах (как пункт Game Filter в service.bat)" IconSource="Games">
+        <ui:SettingsExpander.Footer>
+          <ComboBox ItemsSource="{Binding GameFilterModes}" SelectedIndex="{Binding GameFilterIndex}" MinWidth="180" />
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem Content="Порты TCP" Description="Например: 1024-65535 или 1024-1934,1936-65535">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding GameTcpRange}" Width="220" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Порты UDP">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding GameUdpRange}" Width="220" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Применить" Description="Сохраняет настройки и перезапускает обход">
+          <ui:SettingsExpanderItem.Footer>
+            <Button Classes="accent" Content="Сохранить" Command="{Binding SaveGameFilterCommand}" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="Режим IPSet" Description="loaded — обход по списку IP из ipset-all.txt; none — без IP-списка; any — для всех IP" IconSource="Filter">
+        <ui:SettingsExpander.Footer>
+          <ComboBox ItemsSource="{Binding IpsetModes}" SelectedIndex="{Binding IpsetIndex}" MinWidth="220" />
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem Content="Обновить список IPSet" Description="Скачать свежий ipset-all.txt из репозитория Flowseal">
+          <ui:SettingsExpanderItem.Footer>
+            <Button Content="Обновить" Command="{Binding UpdateIpsetCommand}" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="zapret-discord-youtube" />
+      <ui:SettingsExpander Header="Версия zapret" Description="{Binding LocalVersion, StringFormat='Установлена: {0}'}" IconSource="Sync">
+        <ui:SettingsExpander.Footer>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Проверить обновления" Command="{Binding CheckUpdatesCommand}" />
+            <Button Classes="accent" Content="Скачать / обновить" Command="{Binding DownloadZapretCommand}" />
+          </StackPanel>
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem Content="Последняя версия на GitHub" Description="{Binding RemoteVersion}">
+          <ui:SettingsExpanderItem.Footer>
+            <Button Content="Страница релизов" Command="{Binding OpenReleasesCommand}" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Проверять обновления при запуске">
+          <ui:SettingsExpanderItem.Footer>
+            <ToggleSwitch IsChecked="{Binding CheckUpdatesOnStart}" OnContent="Вкл." OffContent="Выкл." />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="Папка zapret" Description="{Binding ZapretDir}" IconSource="Folder">
+        <ui:SettingsExpander.Footer>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Открыть" Command="{Binding OpenZapretFolderCommand}" />
+            <Button Name="BrowseButton" Content="Выбрать…" />
+            <Button Content="По умолчанию" Command="{Binding ResetZapretDirCommand}" />
+          </StackPanel>
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="nfqws (Linux)" Description="{Binding NfqwsStatus}" IconSource="Code" IsVisible="{Binding IsLinux}">
+        <ui:SettingsExpander.Footer>
+          <Button Classes="accent" Content="Скачать nfqws" Command="{Binding DownloadNfqwsCommand}" />
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem Content="Путь к nfqws" Description="Пусто — искать автоматически">
+          <ui:SettingsExpanderItem.Footer>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBox Text="{Binding NfqwsPath}" Width="300" Watermark="/opt/zapret/nfq/nfqws" />
+              <Button Content="Сохранить" Command="{Binding SaveNfqwsPathCommand}" />
+            </StackPanel>
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="Оформление и инструменты" />
+      <ui:SettingsExpander Header="Тема" Description="Цвет акцента берётся из системы" IconSource="DarkTheme">
+        <ui:SettingsExpander.Footer>
+          <ComboBox ItemsSource="{Binding Themes}" SelectedIndex="{Binding ThemeIndex}" MinWidth="180" />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+      <ui:SettingsExpander Header="Диагностика" Description="Проверка конфликтующих программ, служб, прокси, DNS и окружения (как в service.bat). Результат — в консоли" IconSource="Repair">
+        <ui:SettingsExpander.Footer>
+          <Button Content="Запустить" Command="{Binding RunDiagnosticsCommand}" />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="О программе" />
+      <ui:SettingsExpander Header="Zapret GUI" Description="{Binding AppVersion, StringFormat='Версия {0}. Графическая оболочка для zapret-discord-youtube (Flowseal) и zapret (bol-van)'}" IconSource="Help">
+        <ui:SettingsExpander.Footer>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Папка данных" Command="{Binding OpenDataFolderCommand}" />
+            <Button Content="zapret-discord-youtube на GitHub" Command="{Binding OpenProjectCommand}" />
+          </StackPanel>
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

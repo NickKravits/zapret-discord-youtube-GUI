@@ -1,0 +1,127 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:ZapretGui.ViewModels"
+             xmlns:core="using:ZapretGui.Core"
+             x:Class="ZapretGui.Views.TestPage"
+             x:Name="Root"
+             x:DataType="vm:TestViewModel">
+  <ScrollViewer>
+    <StackPanel Classes="Page">
+      <TextBlock Classes="PageTitle" Text="Тест стратегий" />
+      <TextBlock Classes="Caption" Margin="0,-12,0,12"
+                 Text="Стратегии запускаются по очереди, для каждой проверяется доступность Discord, YouTube, Google и Cloudflare (HTTP/1.1, TLS 1.2, TLS 1.3 и ping). Лучшая стратегия — с наибольшим числом успешных проверок." />
+
+      <Border Classes="Card" Padding="20">
+        <StackPanel Spacing="12">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel VerticalAlignment="Center" Spacing="2">
+              <TextBlock Text="{Binding ProgressText}" FontWeight="SemiBold" IsVisible="{Binding ProgressText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+              <TextBlock Classes="Caption" Text="{Binding TargetsText}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+              <Button Classes="accent" MinWidth="140" Height="36" Command="{Binding StartCommand}" IsVisible="{Binding !IsTesting}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ui:SymbolIcon Symbol="Play" FontSize="16" />
+                  <TextBlock Text="Начать тест" />
+                </StackPanel>
+              </Button>
+              <Button MinWidth="140" Height="36" Command="{Binding CancelCommand}" IsVisible="{Binding IsTesting}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <ui:SymbolIcon Symbol="Stop" FontSize="16" />
+                  <TextBlock Text="Остановить" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </Grid>
+          <ProgressBar Minimum="0" Maximum="{Binding ProgressMax}" Value="{Binding ProgressValue}" IsVisible="{Binding IsTesting}" />
+        </StackPanel>
+      </Border>
+
+      <ui:InfoBar IsOpen="{Binding Best, Converter={x:Static ObjectConverters.IsNotNull}}" IsClosable="False" Severity="Success"
+                  Title="Лучшая стратегия"
+                  Message="{Binding Best.Name, FallbackValue=''}" Margin="0,8,0,0">
+        <ui:InfoBar.ActionButton>
+          <Button Classes="accent" Content="Включить" Command="{Binding ApplyCommand}" CommandParameter="{Binding Best}" />
+        </ui:InfoBar.ActionButton>
+      </ui:InfoBar>
+
+      <TextBlock Classes="SectionHeader" Text="Параметры теста" />
+      <ui:SettingsExpander Header="Стратегии для проверки" Description="Отметьте стратегии, которые нужно протестировать" IconSource="List" IsExpanded="False">
+        <ui:SettingsExpander.Footer>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Все" Command="{Binding SelectAllCommand}" IsEnabled="{Binding !IsTesting}" />
+            <Button Content="Ничего" Command="{Binding SelectNoneCommand}" IsEnabled="{Binding !IsTesting}" />
+          </StackPanel>
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem>
+          <ItemsControl ItemsSource="{Binding Items}" IsEnabled="{Binding !IsTesting}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:SelectableStrategy">
+                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Width="260" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="Таймаут проверки" Description="Сколько секунд ждать ответа от каждого сайта" IconSource="Clock">
+        <ui:SettingsExpander.Footer>
+          <NumericUpDown Value="{Binding TimeoutSeconds}" Minimum="2" Maximum="30" Increment="1" FormatString="0" Width="130" IsEnabled="{Binding !IsTesting}" />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="Список проверяемых адресов" Description="utils/targets.txt в папке zapret — можно добавить свои сайты" IconSource="Link">
+        <ui:SettingsExpander.Footer>
+          <Button Content="Открыть targets.txt" Command="{Binding OpenTargetsCommand}" />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="Результаты" IsVisible="{Binding HasResults}" />
+      <ItemsControl ItemsSource="{Binding Results}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:TestResultItem">
+            <ui:SettingsExpander Margin="0,0,0,4" IconSource="Flag" Description="{Binding Details}">
+              <ui:SettingsExpander.Header>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                  <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                  <Border Classes="Badge" IsVisible="{Binding IsBest}">
+                    <TextBlock Text="Лучшая" />
+                  </Border>
+                </StackPanel>
+              </ui:SettingsExpander.Header>
+              <ui:SettingsExpander.Footer>
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                  <StackPanel VerticalAlignment="Center" Spacing="4" Width="150">
+                    <TextBlock Text="{Binding ScoreText}" HorizontalAlignment="Right" FontWeight="SemiBold" />
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding Percent}" MinWidth="0" Width="150" HorizontalAlignment="Right" />
+                  </StackPanel>
+                  <Button Content="Включить" VerticalAlignment="Center"
+                          Command="{Binding #Root.((vm:TestViewModel)DataContext).ApplyCommand}"
+                          CommandParameter="{Binding}" IsVisible="{Binding !HasError}" />
+                </StackPanel>
+              </ui:SettingsExpander.Footer>
+              <ui:SettingsExpanderItem>
+                <ItemsControl ItemsSource="{Binding Targets}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="core:TargetResult">
+                      <Grid ColumnDefinitions="200,*" Margin="0,2">
+                        <TextBlock Text="{Binding Name}" Classes.ok="{Binding AllOk}" Classes.fail="{Binding AnyFail}" />
+                        <TextBlock Grid.Column="1" Classes="Caption" Text="{Binding Summary}" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ui:SettingsExpanderItem>
+            </ui:SettingsExpander>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:ZapretGui.ViewModels"
+             xmlns:core="using:ZapretGui.Core"
+             x:Class="ZapretGui.Views.DnsPage"
+             x:DataType="vm:DnsViewModel">
+  <ScrollViewer>
+    <StackPanel Classes="Page">
+      <TextBlock Classes="PageTitle" Text="Comss DNS" />
+
+      <Border Classes="Card" Padding="24,20">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <Border Classes="StatusDot" Classes.on="{Binding IsActive}">
+            <ui:SymbolIcon Symbol="Globe" FontSize="26" />
+          </Border>
+          <StackPanel Grid.Column="1" Margin="18,0" VerticalAlignment="Center" Spacing="2">
+            <TextBlock Text="{Binding StatusText}" FontSize="20" FontWeight="SemiBold" />
+            <TextBlock Classes="Caption" Text="Comss.one DNS открывает сервисы, которые блокируют пользователей из России (ChatGPT, Gemini, Copilot и др.), и работает вместе с zapret." />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <ui:ProgressRing IsIndeterminate="True" Width="20" Height="20" IsVisible="{Binding IsBusy}" />
+            <Button Content="Отключить" Command="{Binding DisableCommand}" IsEnabled="{Binding !IsBusy}" />
+            <Button Classes="accent" Content="Подключить" MinWidth="120" Height="36" Command="{Binding EnableCommand}" IsEnabled="{Binding !IsBusy}" />
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <TextBlock Classes="SectionHeader" Text="Настройки" />
+      <ui:SettingsExpander Header="Режим" Description="DNS-over-HTTPS шифрует запросы — провайдер их не видит и не подменяет" IconSource="Setting">
+        <ui:SettingsExpander.Footer>
+          <ComboBox ItemsSource="{Binding Modes}" SelectedIndex="{Binding ModeIndex}" MinWidth="260" />
+        </ui:SettingsExpander.Footer>
+      </ui:SettingsExpander>
+
+      <ui:SettingsExpander Header="Адреса серверов" Description="Значения по умолчанию взяты со страницы Comss.one DNS" IconSource="Admin">
+        <ui:SettingsExpander.Footer>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="По умолчанию" Command="{Binding ResetDefaultsCommand}" />
+            <Button Content="Страница Comss" Command="{Binding OpenComssCommand}" />
+          </StackPanel>
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem Content="Основной DNS">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding Primary}" Width="260" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Дополнительный DNS">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding Secondary}" Width="260" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Сервер DoH" Description="IP-адрес для DNS-over-HTTPS" IsVisible="{Binding IsWindows}">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding DohServer}" Width="260" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+        <ui:SettingsExpanderItem Content="Шаблон DoH" IsVisible="{Binding IsWindows}">
+          <ui:SettingsExpanderItem.Footer>
+            <TextBox Text="{Binding DohTemplate}" Width="260" />
+          </ui:SettingsExpanderItem.Footer>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+
+      <TextBlock Classes="SectionHeader" Text="Сетевые подключения" />
+      <ui:SettingsExpander Header="Активные адаптеры" Description="DNS меняется на всех подключениях с выходом в интернет. «Отключить» возвращает автоматическое получение DNS (DHCP)." IconSource="Wifi4" IsExpanded="True">
+        <ui:SettingsExpander.Footer>
+          <Button Content="Обновить" Command="{Binding RefreshCommand}" />
+        </ui:SettingsExpander.Footer>
+        <ui:SettingsExpanderItem>
+          <ItemsControl ItemsSource="{Binding Adapters}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="core:AdapterDns">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                  <StackPanel>
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                    <TextBlock Classes="Caption" Text="{Binding Description}" />
+                  </StackPanel>
+                  <SelectableTextBlock Grid.Column="1" Classes="Mono" Text="{Binding ServersText}" VerticalAlignment="Center" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ui:SettingsExpanderItem>
+      </ui:SettingsExpander>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

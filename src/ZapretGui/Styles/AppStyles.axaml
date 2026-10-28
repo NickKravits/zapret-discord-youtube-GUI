@@ -1,0 +1,104 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls">
+
+  <Style Selector="TextBlock.PageTitle">
+    <Setter Property="FontSize" Value="28" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Margin" Value="0,0,0,20" />
+  </Style>
+
+  <Style Selector="TextBlock.SectionHeader">
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Margin" Value="1,22,0,8" />
+  </Style>
+
+  <Style Selector="TextBlock.Caption">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+
+  <Style Selector="StackPanel.Page">
+    <Setter Property="Margin" Value="36,28,36,36" />
+    <Setter Property="MaxWidth" Value="1040" />
+    <Setter Property="Spacing" Value="4" />
+  </Style>
+
+  <Style Selector="Border.Card">
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource OverlayCornerRadius}" />
+    <Setter Property="Padding" Value="16" />
+  </Style>
+
+  <Style Selector="ui|SettingsExpander">
+    <Setter Property="Margin" Value="0,0,0,4" />
+  </Style>
+
+  <Style Selector=":is(TextBlock).Mono, .Mono :is(TextBlock)">
+    <Setter Property="FontFamily" Value="Cascadia Mono,Consolas,DejaVu Sans Mono,Liberation Mono,monospace" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+  <Style Selector="TextBox.Mono">
+    <Setter Property="FontFamily" Value="Cascadia Mono,Consolas,DejaVu Sans Mono,Liberation Mono,monospace" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <Style Selector="TextBlock.log">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    <Setter Property="TextWrapping" Value="NoWrap" />
+  </Style>
+  <Style Selector="TextBlock.log.output">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+  </Style>
+  <Style Selector="TextBlock.log.cmd">
+    <Setter Property="Foreground" Value="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+  </Style>
+  <Style Selector="TextBlock.log.ok">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+  </Style>
+  <Style Selector="TextBlock.log.warn">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCautionBrush}" />
+  </Style>
+  <Style Selector="TextBlock.log.err">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+  </Style>
+
+  <Style Selector="Border.StatusDot">
+    <Setter Property="Width" Value="56" />
+    <Setter Property="Height" Value="56" />
+    <Setter Property="CornerRadius" Value="28" />
+    <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+  </Style>
+  <Style Selector="Border.StatusDot.on">
+    <Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBackgroundBrush}" />
+  </Style>
+  <Style Selector="Border.StatusDot ui|SymbolIcon">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+  </Style>
+  <Style Selector="Border.StatusDot.on ui|SymbolIcon">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+  </Style>
+
+  <Style Selector="Border.Badge">
+    <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="8,1" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Border.Badge > TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="TextBlock.ok">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+  </Style>
+  <Style Selector="TextBlock.fail">
+    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+  </Style>
+</Styles>

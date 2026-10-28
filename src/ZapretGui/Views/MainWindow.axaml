@@ -1,0 +1,46 @@
+<wnd:AppWindow xmlns="https://github.com/avaloniaui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:ui="using:FluentAvalonia.UI.Controls"
+               xmlns:wnd="using:FluentAvalonia.UI.Windowing"
+               xmlns:vm="using:ZapretGui.ViewModels"
+               x:Class="ZapretGui.Views.MainWindow"
+               x:DataType="vm:MainViewModel"
+               Title="Zapret GUI"
+               Icon="/Assets/app.png"
+               Width="1100" Height="740"
+               MinWidth="760" MinHeight="520"
+               WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,*">
+    <Grid Name="TitleBarHost" Height="44" ColumnDefinitions="Auto,Auto,*" Background="Transparent">
+      <Image Source="/Assets/app.png" Width="16" Height="16" Margin="18,0,12,0" VerticalAlignment="Center" />
+      <TextBlock Grid.Column="1" Text="Zapret GUI" FontSize="12" VerticalAlignment="Center" />
+      <TextBlock Grid.Column="2" Text="  •  без прав администратора" FontSize="12" VerticalAlignment="Center"
+                 Foreground="{DynamicResource SystemFillColorCautionBrush}" IsVisible="{Binding ShowAdminWarning}" />
+    </Grid>
+
+    <ui:NavigationView Grid.Row="1" Name="Nav"
+                       PaneDisplayMode="Left"
+                       OpenPaneLength="280"
+                       IsSettingsVisible="True"
+                       IsBackButtonVisible="False"
+                       IsPaneToggleButtonVisible="True">
+      <ui:NavigationView.MenuItems>
+        <ui:NavigationViewItem Content="Главная" Tag="home" IconSource="Home" />
+        <ui:NavigationViewItem Content="Тест стратегий" Tag="test" IconSource="Target" />
+        <ui:NavigationViewItem Content="Списки доменов и IP" Tag="lists" IconSource="List" />
+        <ui:NavigationViewItem Content="Comss DNS" Tag="dns" IconSource="Globe" />
+        <ui:NavigationViewItem Content="Консоль" Tag="console" IconSource="Code" />
+      </ui:NavigationView.MenuItems>
+    </ui:NavigationView>
+
+    <ui:InfoBar Grid.Row="1"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Margin="0,0,24,20" MaxWidth="520" MinWidth="320"
+                IsOpen="{Binding IsNotificationOpen, Mode=TwoWay}"
+                Title="{Binding NotificationTitle}"
+                Message="{Binding NotificationMessage}"
+                Severity="{Binding NotificationSeverity}"
+                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                IsClosable="True" />
+  </Grid>
+</wnd:AppWindow>

@@ -1,0 +1,102 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:ZapretGui.ViewModels"
+             xmlns:core="using:ZapretGui.Core"
+             x:Class="ZapretGui.Views.ListsPage"
+             x:DataType="vm:ListsViewModel">
+  <Grid RowDefinitions="Auto,*" Margin="36,28,36,24" MaxWidth="1040">
+    <StackPanel Spacing="4">
+      <TextBlock Classes="PageTitle" Text="Списки доменов и IP" />
+
+      <ui:InfoBar IsOpen="{Binding NeedsRestart}" IsClosable="True" Severity="Informational"
+                  Title="Списки изменены" Message="Перезапустите обход, чтобы изменения точно вступили в силу." Margin="0,0,0,8">
+        <ui:InfoBar.ActionButton>
+          <Button Content="Перезапустить" Command="{Binding RestartCommand}" />
+        </ui:InfoBar.ActionButton>
+      </ui:InfoBar>
+
+      <Border Classes="Card" Padding="20,16">
+        <StackPanel Spacing="10">
+          <StackPanel Spacing="2">
+            <TextBlock Text="Быстрое добавление" FontWeight="SemiBold" />
+            <TextBlock Classes="Caption" Text="Вставьте домены, ссылки или IP-адреса/подсети (через пробел, запятую или с новой строки). Тип определяется автоматически: домены попадут в «Мои домены», IP — в «Мои IP-адреса»." />
+          </StackPanel>
+          <Grid ColumnDefinitions="*,Auto,Auto" >
+            <TextBox Text="{Binding QuickInput}" Watermark="example.com, https://site.org/page, 1.2.3.4, 10.0.0.0/8">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding QuickAddCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+            <ComboBox Grid.Column="1" Margin="8,0" MinWidth="210" ItemsSource="{Binding QuickTargets}" SelectedIndex="{Binding QuickTargetIndex}" />
+            <Button Grid.Column="2" Classes="accent" Command="{Binding QuickAddCommand}" MinWidth="120">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ui:SymbolIcon Symbol="Add" FontSize="14" />
+                <TextBlock Text="Добавить" />
+              </StackPanel>
+            </Button>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <TextBlock Classes="SectionHeader" Text="Все списки" />
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="280,12,*">
+      <Border Classes="Card" Padding="4">
+        <ListBox ItemsSource="{Binding Lists}" SelectedItem="{Binding SelectedList}" Background="Transparent">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="core:ListInfo">
+              <StackPanel Margin="4,6" Spacing="1">
+                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                <TextBlock Classes="Caption" Text="{Binding FileName}" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <Border Grid.Column="2" Classes="Card" Padding="16">
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+          <StackPanel Spacing="2">
+            <TextBlock Text="{Binding SelectedList.Title, FallbackValue=''}" FontSize="16" FontWeight="SemiBold" />
+            <TextBlock Classes="Caption" Text="{Binding SelectedList.Description, FallbackValue=''}" />
+          </StackPanel>
+
+          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+            <TextBox Text="{Binding AddInput}" Watermark="Добавить в этот список…">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding AddToSelectedCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+            <Button Grid.Column="1" Margin="8,0,0,0" Content="Добавить" Command="{Binding AddToSelectedCommand}" />
+          </Grid>
+
+          <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,8,0,8">
+            <TextBox Text="{Binding Filter}" Watermark="Поиск…" />
+            <TextBlock Grid.Column="1" Classes="Caption" Text="{Binding CountText}" VerticalAlignment="Center" Margin="12,0,0,0" />
+          </Grid>
+
+          <ListBox Grid.Row="3" Name="EntriesList" Classes="Mono" ItemsSource="{Binding Entries}" SelectionMode="Multiple,Toggle"
+                   Background="Transparent" MinHeight="220">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Text="{Binding}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+            <Button Command="{Binding RemoveSelectedCommand}" CommandParameter="{Binding #EntriesList.SelectedItems}">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <ui:SymbolIcon Symbol="Delete" FontSize="14" />
+                <TextBlock Text="Удалить выбранные" />
+              </StackPanel>
+            </Button>
+            <Button Content="Открыть файл" Command="{Binding OpenFileCommand}" />
+            <Button Content="Перечитать" Command="{Binding ReloadCommand}" />
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>
