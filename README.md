@@ -1,6 +1,6 @@
 # Zapret GUI
 
-Графическое приложение для обхода блокировок Discord и YouTube в стиле «Параметров» Windows 11.
+Графическое приложение для обхода блокировок Discord и YouTube.
 
 Это форк [Flowseal/zapret-discord-youtube](https://github.com/Flowseal/zapret-discord-youtube). Стратегии, списки и бинарные файлы берутся из оригинального репозитория без изменений, а вместо `.bat`-файлов и меню `service.bat` используется окно с настройками. Основа обхода — [zapret](https://github.com/bol-van/zapret) от bol-van.
 
